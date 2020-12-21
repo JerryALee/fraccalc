@@ -14,7 +14,7 @@ from setuptools import find_packages, setup, Command
 # Package meta-data.
 NAME = 'fracclac'
 DESCRIPTION = 'Python supports for fractional calculus.'
-URL = 'https://github.com/me/myproject'
+URL = 'https://github.com/JerryALee/fraccalc'
 EMAIL = 'cnlichengrui@foxmail.com'
 AUTHOR = 'Chengrui Li'
 REQUIRES_PYTHON = '>=3.6.0'
