@@ -1,0 +1,14 @@
+README.md
+setup.py
+fraccalc/__init__.py
+fraccalc/basic.py
+fraccalc.egg-info/PKG-INFO
+fraccalc.egg-info/SOURCES.txt
+fraccalc.egg-info/dependency_links.txt
+fraccalc.egg-info/requires.txt
+fraccalc.egg-info/top_level.txt
+fraccalc/analytic/__init__.py
+fraccalc/analytic/functions.py
+fraccalc/analytic/semi.py
+fraccalc/numeric/__init__.py
+fraccalc/numeric/diffintegral.py

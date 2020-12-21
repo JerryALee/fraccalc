@@ -12,7 +12,7 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'fracclac'
+NAME = 'fraccalc'
 DESCRIPTION = 'Python supports for fractional calculus.'
 URL = 'https://github.com/JerryALee/fraccalc'
 EMAIL = 'cnlichengrui@foxmail.com'
