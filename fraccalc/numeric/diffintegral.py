@@ -2,16 +2,16 @@ import numpy as np
 from ..basic import gamma, gammaRatio
 
 
-def fracMask(v, N=7, method='2'):
+def coeff(v, N=7, method='2'):
     '''
-    Return the the PU-1 fractional coefficients.
+    Return the fractional coefficients.
 
     Parameters
     ----------
     v : float
         Order of the diffinetration.
     N : int, optional
-        Mask size of the corresponding operator. Default is 7.
+        Length of the corresponding coefficients. Default is 7.
     method : str
         Diffintegration operator. {'1' or '2' (default)}.
 
@@ -44,7 +44,7 @@ def fracMask(v, N=7, method='2'):
         return coefficients
 
 
-def maskArr(xq, N=7, a=0, method='2'):
+def dotPos(xq, N=7, a=0, method='2'):
     '''
     Return the position array for the mask convolution.
 
@@ -53,7 +53,7 @@ def maskArr(xq, N=7, a=0, method='2'):
     xq : float
         Point at which function is diffintegrated.
     N : int, optional
-        Mask size of the corresponding operator. Default is 7.
+        Length of the corresponding coefficients. Default is 7.
     a : float, optional
         Lower limit of the diffintegration. Default is 0.
     method : str
@@ -77,7 +77,7 @@ def maskArr(xq, N=7, a=0, method='2'):
         return h, x_arr
 
 
-def fracDeriv(fun, xq, v, N=7, a=0, method='2'):
+def deriv(fun, xq, v, N=7, a=0, method='2'):
     '''
     Calculate the fractional diffintegral.
 
@@ -90,7 +90,7 @@ def fracDeriv(fun, xq, v, N=7, a=0, method='2'):
     v : float
         Diffintegration order.
     N : int, optional
-        Mask size of the corresponding operator. Default is 7.
+        Length of the corresponding coefficients. Default is 7.
     a : float, optional
         Lower limit of the diffintegration. Default is 0.
     method : str
@@ -102,14 +102,57 @@ def fracDeriv(fun, xq, v, N=7, a=0, method='2'):
         The diffintegral value at xq.
     '''
 
-    C = fracMask(v, N, method)
+    C = coeff(v, N, method)
     if hasattr(xq, "__len__"):
         num = len(xq)
         yq = np.zeros(num)
         for i in range(num):
-            h, x_tmp = maskArr(xq[i], N, a, method)
+            h, x_tmp = dotPos(xq[i], N, a, method)
             yq[i] = np.dot(C, fun(x_tmp)) / h**(v)
         return yq
     else:
-        h, x_tmp = maskArr(xq, N, a, method)
+        h, x_tmp = dotPos(xq, N, a, method)
         return np.dot(C, fun(x_tmp)) / h**(v)
+
+
+def mask(v, N=13, method='Tiansi'):
+    '''
+    Return fractional mask operator.
+
+    Parameters
+    ----------
+    v : float
+        Diffintegration order.
+    N : int, optional
+        Mask size of the corresponding operator. Default is 13 x 13.
+    method : str
+        Diffintegration operator. {'Tiansi' (1, default) or 'lcr' (2)}.
+
+    Returns
+    ----------
+    result_mask : 2darray
+        The fractional mask.
+    '''
+
+    center = int((N - 1) / 2)
+    result_mask = np.zeros((N, N))
+    if method == 'Tiansi' or method == '1':
+        C = coeff(v, center + 1, '1')
+    elif method == 'lcr' or method == '2':
+        C = coeff(v, center + 2, '2')
+        C[2] += C[0]
+        C = C[1:]
+    
+    result_mask[center, center] = 8 * C[0]
+    for i in range(1, center + 1):
+        c = C[i]
+        result_mask[center - i, center] = c
+        result_mask[center + i, center] = c
+        result_mask[center, center - i] = c
+        result_mask[center, center + i] = c
+        result_mask[center + i, center - i] = c
+        result_mask[center - i, center + i] = c
+        result_mask[center - i, center - i] = c
+        result_mask[center + i, center + i] = c
+    return result_mask
+    
