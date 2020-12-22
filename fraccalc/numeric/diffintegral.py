@@ -181,20 +181,31 @@ def deriv8(A, v, method='2', N=7):
     len_x, len_y = A.shape
     C = coeff(v, N, method)
     d8 = np.zeros((8, len_x, len_y))
-    if method == '1'
+    if method == '1':
         A_pad = np.pad(A, N - 1, mode='symmetric')
-    elif method == '2'
+        for k in range(N):
+            c = C[k]
+            d8[0] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 1):(N - 1 + len_y)]
+            d8[1] += c * A_pad[(N - 1 + k):(N - 1 + k + len_x), (N - 1):(N - 1 + len_y)]
+            d8[2] += c * A_pad[(N - 1):(N - 1 + len_x), (N - 1 - k):(N - 1 - k + len_y)]
+            d8[3] += c * A_pad[(N - 1):(N - 1 + len_x), (N - 1 + k):(N - 1 + k + len_y)]
+            d8[4] += c * A_pad[(N - 1 + k):(N - 1 + k + len_x), (N - 1 - k):(N - 1 - k + len_y)]
+            d8[5] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 1 + k):(N - 1 + k + len_y)]
+            d8[6] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 1 - k):(N - 1 - k + len_y)]
+            d8[7] += c * A_pad[(N - 1 + k):(N - 1 + k + len_x), (N - 1 + k):(N - 1 + k + len_y)]
+    elif method == '2':
         A_pad = np.pad(A, N - 2, mode='symmetric')
-    for k in range(N):
-        c = C[k]
-        d8[0] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 1):(N - 1 + len_y)]
-        d8[1] += c * A_pad[(N - 1 + k):(N - 1 + k + len_x), (N - 1):(N - 1 + len_y)]
-        d8[2] += c * A_pad[(N - 1):(N - 1 + len_x), (N - 1 - k):(N - 1 - k + len_y)]
-        d8[3] += c * A_pad[(N - 1):(N - 1 + len_x), (N - 1 + k):(N - 1 + k + len_y)]
-        d8[4] += c * A_pad[(N - 1 + k):(N - 1 + k + len_x), (N - 1 - k):(N - 1 - k + len_y)]
-        d8[5] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 1 + k):(N - 1 + k + len_y)]
-        d8[6] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 1 - k):(N - 1 - k + len_y)]
-        d8[7] += c * A_pad[(N - 1 + k):(N - 1 + k + len_x), (N - 1 + k):(N - 1 + k + len_y)]
+        for k in range(N):
+            c = C[k]
+            d8[0] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 2):(N - 2 + len_y)]
+            d8[1] += c * A_pad[(N - 3 + k):(N - 3 + k + len_x), (N - 2):(N - 2 + len_y)]
+            d8[2] += c * A_pad[(N - 2):(N - 2 + len_x), (N - 1 - k):(N - 1 - k + len_y)]
+            d8[3] += c * A_pad[(N - 2):(N - 2 + len_x), (N - 3 + k):(N - 3 + k + len_y)]
+            d8[4] += c * A_pad[(N - 3 + k):(N - 3 + k + len_x), (N - 1 - k):(N - 1 - k + len_y)]
+            d8[5] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 3 + k):(N - 3 + k + len_y)]
+            d8[6] += c * A_pad[(N - 1 - k):(N - 1 - k + len_x), (N - 1 - k):(N - 1 - k + len_y)]
+            d8[7] += c * A_pad[(N - 3 + k):(N - 3 + k + len_x), (N - 3 + k):(N - 3 + k + len_y)]
+    
     return d8
 
 def derivTotal(d8, mode='sum'):
